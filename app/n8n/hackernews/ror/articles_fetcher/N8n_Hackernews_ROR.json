@@ -1,0 +1,127 @@
+{
+  "name": "N8n Hackernews",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "all",
+        "limit": 5,
+        "additionalFields": {
+          "keyword": "Ruby on Rails",
+          "tags": [
+            "story"
+          ]
+        }
+      },
+      "id": "cd5c299d-513d-4d83-ad21-955014b60bdd",
+      "name": "Hacker News Top 5 Articles",
+      "type": "n8n-nodes-base.hackerNews",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "2023-07-03T16:00:00.000Z",
+              "value2": "2023-06-04T03:59:59.000Z"
+            }
+          ]
+        }
+      },
+      "id": "85e3d30f-d80c-41ee-81c7-7d199b1f29e1",
+      "name": "Filter Yesterday's Articles",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1001772370485",
+        "text": "={{ $json.title }} {{ $json.author }} {{ $json.url }} {{ $json.created_at }}",
+        "additionalFields": {}
+      },
+      "id": "edadc28a-0a6b-4271-bd81-460d61a5eae2",
+      "name": "Send to Telegram Channel",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        440
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "59c7c149-0dcb-4841-b7b7-cba5492bad66",
+      "name": "Fetch Yesterday's Articles Every Mid Night",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        860,
+        440
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Hacker News Top 5 Articles": {
+      "main": [
+        [
+          {
+            "node": "Filter Yesterday's Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Yesterday's Articles": {
+      "main": [
+        [
+          {
+            "node": "Send to Telegram Channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Yesterday's Articles Every Mid Night": {
+      "main": [
+        [
+          {
+            "node": "Hacker News Top 5 Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "versionId": "8c83b795-eabf-4241-838a-426ff8f15fc1",
+  "id": "1",
+  "meta": {
+    "instanceId": "5bfd031731ffc722472518d00e93d4746e6f55dee94419e0d28eeb17eee76526"
+  },
+  "tags": []
+}
